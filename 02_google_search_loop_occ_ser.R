@@ -5,7 +5,7 @@ library(chromote)
 
 ##Pull in the EO table
 
-the_eo_table <- read_csv("../data_info/rapid_opm_rule/new_empl_policy_agency.csv") %>%
+the_eo_table <- read_csv("../rapid_opm_rule/data_info/new_empl_policy_agency.csv") %>%
   mutate(agency = ifelse(agency ==  "Department of War", "Department of Defense", agency),
          subagency_office = gsub("of War", "of Defense", subagency_office),
          agency = gsub("of War", "of Defense", agency),
@@ -17,7 +17,7 @@ the_eo_table <- read_csv("../data_info/rapid_opm_rule/new_empl_policy_agency.csv
   distinct()
 
 ##Find which rows have already run.
-all_text_tables <- read_csv("../data_info/rapid_opm_rule/occ_series_pos_name_raw_agency.csv")
+all_text_tables <- read_csv("../rapid_opm_rule/data_info/occ_series_pos_name_raw_agency.csv")
 
 the_eo_table <- anti_join(the_eo_table, all_text_tables)
 
@@ -29,7 +29,7 @@ all_text_tables <- data.frame()
 
 copy_element <- "#web > ol.reg.searchCenterTop > li > div > div.grp.grp-genAISum > div.compText.genAI.s-ans.hideOnLoad.hideCollapse.answer.fadeIn > div > div"
 
-for(i in 1379:nrow(the_eo_table)){
+for(i in 1:nrow(the_eo_table)){
   if(the_eo_table$subagency_office[i] != the_eo_table$agency[i]){
  search_phrase <- paste0("What is the federal occupational series for a ", the_eo_table$position_name[i], " in the ", the_eo_table$subagency_office[i], " in the ", the_eo_table$agency_to_join[i])
   }else{search_phrase <- paste0("What is the federal occupational series for a ", the_eo_table$position_name[i], " in the ", the_eo_table$subagency_office[i])}
@@ -67,7 +67,7 @@ for(i in 1379:nrow(the_eo_table)){
 
 ##Quickly save the table before it is lost
 
-write_csv(all_text_tables, "../data_info/rapid_opm_rule/occ_series_pos_name_raw_yahoo_1.csv")
+write_csv(all_text_tables, "../rapid_opm_rule/data_info/occ_series_pos_name_raw_yahoo_1.csv")
 
 ##To coerce the ai text into the occ_series_code and the occ_series
 all_text_tables <- all_text_tables %>%
@@ -76,5 +76,5 @@ all_text_tables <- all_text_tables %>%
          occ_series_digits = paste(unique(unlist(occ_series_digits)), collapse = "|")) #%>%
   #separate_longer_delim(occ_series_digits, sep = "|")
 
-write_csv(all_text_tables, "../data_info/rapid_opm_rule/occ_series_pos_name_clean_yahoo_1.csv")
+write_csv(all_text_tables, "../rapid_opm_rule/data_info/occ_series_pos_name_clean_yahoo_1.csv")
 

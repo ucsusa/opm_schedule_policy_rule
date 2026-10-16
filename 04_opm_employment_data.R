@@ -4,22 +4,26 @@ library(tidyverse)
 gc()
 
 
-big_table <- read.delim("../data_info/rapid_opm_rule/employment_202604_1_2026-06-04.txt", sep = "|") %>%
+big_table <- read.delim("../rapid_opm_rule/data_info/employment_202604_1_2026-06-04.txt", sep = "|") %>%
   mutate(bt_tracking_id = 1:nrow(.),
          agency_subelement = ifelse(agency == "Department of the Navy", "Department of the Navy", agency_subelement),
          agency_subelement = ifelse(agency == "Department of the Army", "Department of the Army", agency_subelement),
          agency_subelement = ifelse(agency == "Department of the Air Force", "Department of the Air Force", agency_subelement)) %>%
   filter(!grepl("STUDENT TRAINEE", occupational_series))
 
+##Would like to filter by general schedule > 13, but unsure what the other pay grades are.
+general_schedule <- big_table %>%
+  filter(pay_plan == "GENERAL SCHEDULE")
+
 ##Pull in table of the offices within the office of the secretary at the Department of Health and Human Services
 
-dhhs_osa_subs <- read_csv("../rapid_opm_rule/dhhs_os_subelements.csv")
+dhhs_osa_subs <- read_csv("../rapid_opm_rule/data_info/dhhs_os_subelements.csv")
 sub_offices_dhhs <- unique(dhhs_osa_subs$office_name)
 sub_offices_dhhs <- sub_offices_dhhs[!grepl("Assistant Secretary", sub_offices_dhhs)]
 
 ##Pull in the executive order tables created in 01_grab_eo_data.R
 ##US Access Board is under a different/incorrect name in the EO. It should be ARCHITECTURAL AND TRANSPORTATION BARRIERS COMPLIANCE BOARD
-the_eo_table <- read_csv("../data_info/rapid_opm_rule/new_empl_policy_agency.csv") %>%
+the_eo_table <- read_csv("../rapid_opm_rule/data_info/new_empl_policy_agency.csv") %>%
   select(-position_number) %>%
   distinct() %>%
   mutate(supervisory_status = ifelse(grepl("Supervis|Manage", position_name), "SUPERVISOR OR MANAGER", "ALL OTHER POSITIONS"),
@@ -93,12 +97,12 @@ big_table_to_join <- big_table %>%
 
 
 ##Pull in the table of position names and occupational series digits within subagencies and agencies.
-specific_positions_long <- read_csv("../data_info/rapid_opm_rule/occ_series_pos_name_clean_all.csv")
+specific_positions_long <- read_csv("../rapid_opm_rule/data_info/occ_series_pos_name_clean_all.csv")
 
 eo_still_to_join_pos <- left_join(eo_still_to_join, specific_positions_long %>% select(-subagency_office), by = c("position_name", "agency"), relationship = "many-to-many")
 
 ##Pull in the table of agencies, subagencies, and offices from 03_compile_occ_ser_spec_offices and try to join by subagency, agency, and position names again.
-subagency_agency_office <- read_csv("../data_info/rapid_opm_rule/occ_series_spec_offices_all.csv")
+subagency_agency_office <- read_csv("../rapid_opm_rule/data_info/occ_series_spec_offices_all.csv")
 
 ###There are multiple position names in agencies within different subagencies.
 
@@ -178,7 +182,7 @@ eo_big_table_nih <- left_join(big_table_to_join_nih, eo_still_to_join_nih, by = 
 eo_opm <- bind_rows(eo_big_table_subag_series, eo_big_table_subag_series_guess, eo_big_table_directors, eo_big_table_ag, eo_big_table_nih) %>%
   distinct()
 
-write_csv(eo_opm, "../data_info/rapid_opm_rule/eo_join_opm.csv")
+write_csv(eo_opm, "../rapid_opm_rule/data_info/eo_join_opm.csv")
 
 
 ##Troubleshooting joins

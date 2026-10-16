@@ -1,10 +1,10 @@
 library(tidyverse)
 
-occs <- list.files("../data_info/rapid_opm_rule/")
+occs <- list.files("../rapid_opm_rule/data_info/")
 
 occs <- occs[grepl("occ_series_pos_name_clean_yahoo", occs)]
 
-setwd("../rapid_opm_rule/")
+setwd("../rapid_opm_rule/data_info/")
 
 occs_dfs <- map_dfr(occs, read_csv) %>% distinct()
 
@@ -18,7 +18,7 @@ specific_positions_long <- occs_dfs %>%
   select(-c(iteration, occ_series_guess)) %>%
   distinct()
 
-write_csv(specific_positions_long, "../data_info/rapid_opm_rule/occ_series_pos_name_clean_all.csv")
+write_csv(specific_positions_long, "../rapid_opm_rule/data_info/occ_series_pos_name_clean_all.csv")
 
 ##Check for multiple subagencies among agencies, so multiple general attorneys in an agency distributed into multiple subagencies within.
 check_4_multiples <- specific_positions_long %>%

@@ -2,7 +2,7 @@ library(tidyverse)
 gc()
 
 ##Filter to scientists and stem activities
-eo_opm <- read_csv("../data_info/rapid_opm_rule/eo_join_opm.csv")
+eo_opm <- read_csv("../rapid_opm_rule/data_info/eo_join_opm.csv")
 
 ##Narrow joined table to individuals from the OPM dataset.
 eo_opm_indiv <- eo_opm %>%
@@ -18,4 +18,4 @@ eo_opm_indiv_sci_occ <- eo_opm_indiv %>%
   select(-c(position_name, ends_with("_to_join"), subagency_office, subagency)) %>%
   distinct()
 
-write_csv(eo_opm_indiv_sci_occ, "../data_info/rapid_opm_rule/potential_employees_impacted.csv")
+write_csv(eo_opm_indiv_sci_occ, "../rapid_opm_rule/data_info/potential_employees_impacted.csv")

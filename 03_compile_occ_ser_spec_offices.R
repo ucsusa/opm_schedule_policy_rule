@@ -5,13 +5,13 @@ library(stringdist)
 gc()
 ##Read in the opm data to extract the appropriate subagencies found in the google search. The google search was,   paste0("What subagency of the federal government agency ", the_eo_table$agency[i], " is the ", the_eo_table$subagency_office[i], " in?")
 
-big_table <- read.delim("../data_info/rapid_opm_rule/employment_202604_1_2026-06-04.txt", sep = "|")
+big_table <- read.delim("../rapid_opm_rule/data_info/employment_202604_1_2026-06-04.txt", sep = "|")
 
 agency_subagency <- big_table %>%
   select(department, agency_subelement, agency_code) %>%
   distinct()
 
-ag_sub_off <- read.delim("../rapid_opm_rule/DTagy.txt", sep = ",")
+ag_sub_off <- read.delim("../rapid_opm_rule/data_info/DTagy.txt", sep = ",")
 
 sub_agencies <- unique(big_table$agency_subelement)
 sub_agencies <- paste0(tolower(sub_agencies), collapse = "|")
@@ -21,7 +21,7 @@ sub_agencies_code <- paste0(tolower(sub_agencies_code), collapse = "|")
 
 ##Join to EO for the subagency_office section of the data that were actually subagencies and not high level offices.
 ##The department of defense is the department of war in the EO table, but still defense in the OPM data. Will change to defense in the EO table.
-the_eo_table <- read_csv("../data_info/rapid_opm_rule/new_empl_policy_agency.csv") %>%
+the_eo_table <- read_csv("../rapid_opm_rule/data_info/new_empl_policy_agency.csv") %>%
   mutate(agency = ifelse(agency ==  "Department of War", "Department of Defense", agency),
          subagency_office = gsub("of War", "of Defense", subagency_office),
          agency = gsub("of War", "of Defense", agency),
@@ -123,4 +123,4 @@ the_eo_subagencies_offices <- bind_rows(the_eo_table_ind_ag, the_eo_table_subage
   distinct()
 
 
-write_csv(the_eo_subagencies_offices, "../data_info/rapid_opm_rule/occ_series_spec_offices_all.csv")
+write_csv(the_eo_subagencies_offices, "../rapid_opm_rule/data_info/occ_series_spec_offices_all.csv")

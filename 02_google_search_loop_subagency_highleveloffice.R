@@ -5,7 +5,7 @@ library(chromote)
 
 
 ##Pull in the OPM data
-big_table <- read.delim("../data_info/rapid_opm_rule/employment_202604_1_2026-06-04.txt", sep = "|")
+big_table <- read.delim("../rapid_opm_rule/data_info/employment_202604_1_2026-06-04.txt", sep = "|")
 
 agency_subagency <- big_table %>%
   select(agency, agency_subelement, agency_code) %>%
@@ -15,7 +15,7 @@ agency_subagency <- big_table %>%
 ##Join to EO for the subagency_office section of the data that were actually subagencies and not high level offices.
 ##The department of defense is the department of war in the EO table, but still defense in the OPM data. Will change to defense in the EO table.
 
-the_eo_table <- read_csv("../data_info/rapid_opm_rule/new_empl_policy_agency.csv") %>%
+the_eo_table <- read_csv("../rapid_opm_rule/data_info/new_empl_policy_agency.csv") %>%
   mutate(agency = ifelse(agency ==  "Department of War", "Department of Defense", agency),
          subagency_office = gsub("of War", "of Defense", subagency_office),
          agency = gsub("of War", "of Defense", agency),
@@ -46,7 +46,7 @@ the_eo_table_hl_offices <- the_eo_table_ag_subag %>%
   mutate(subagency_office = gsub("//\n//\n", " ", subagency_office))
 
 ##4. Find which subagencies and agencies have already run.
-all_text_tables_done <- read_csv("../data_info/rapid_opm_rule/office_subagency_yahoo_agency.csv")
+all_text_tables_done <- read_csv("../rapid_opm_rule/data_info/office_subagency_yahoo_agency.csv")
 
 the_eo_table_hl_offices <- anti_join(the_eo_table_hl_offices, all_text_tables_done)
 
@@ -92,5 +92,5 @@ for(i in 1:nrow(the_eo_table_hl_offices)){
   all_text_tables <- bind_rows(all_text_tables, text_table)}
 }
 
-write_csv(all_text_tables, "../data_info/rapid_opm_rule/office_subagency_yahoo_agency_1.csv")
+write_csv(all_text_tables, "../rapid_opm_rule/data_info/office_subagency_yahoo_agency_1.csv")
 
