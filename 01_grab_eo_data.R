@@ -1,7 +1,7 @@
 library(tidyverse)
 library(pdftools)
 
-the_eo_fonts <- pdf_data("C:/Users/kellickson/OneDrive - Union of Concerned Scientists/data_analysis/opm_schedule_pol_sci/2026SchedulePolicyCareer.eo_.APPENDIX.pdf", font_info = TRUE)
+the_eo_fonts <- pdf_data("../rapid_opm_rule/data_info/2026SchedulePolicyCareer.eo_.APPENDIX.pdf", font_info = TRUE)
 
 # The pdf data are saved in individual tibbles for each character with the character and the formatting. This is how to pull out the all bold lines of text, which align with the independent agencies in the EO. The following pulls the length of a tibble
 find_matrix_length <- function(x){
@@ -10,9 +10,10 @@ find_matrix_length <- function(x){
 }
 
 all_themes <- data.frame(stringsAsFactors = FALSE)
+eo_fonts_length <- length(the_eo_fonts)
 
 # This loop goes through and pulls each line in the document that includes bold font, which aligns with independent agencies.
-for(i in 1:229){
+for(i in 1:eo_fonts_length){
   
   comment_font <- the_eo_fonts[[i]][1:find_matrix_length(i), 7]
   
@@ -37,7 +38,7 @@ all_themes <- unique(all_themes) %>%
          theme = str_trim(theme))
 
 
-the_eo <- pdf_text("C:/Users/kellickson/OneDrive - Union of Concerned Scientists/data_analysis/opm_schedule_pol_sci/2026SchedulePolicyCareer.eo_.APPENDIX.pdf")
+the_eo <- pdf_text("../rapid_opm_rule/data_info/2026SchedulePolicyCareer.eo_.APPENDIX.pdf")
 
 the_eo <- str_flatten(the_eo)
 
@@ -89,5 +90,4 @@ the_eo_table_clean <- the_eo_table %>%
 
 
 ##Save the table
-write_csv(the_eo_table_clean, "C:/Users/kellickson/OneDrive - Union of Concerned Scientists/data_analysis/opm_schedule_pol_sci/new_empl_policy.csv")
-
+write_csv(the_eo_table_clean, "../rapid_opm_rule/data_info/new_empl_policy.csv")
