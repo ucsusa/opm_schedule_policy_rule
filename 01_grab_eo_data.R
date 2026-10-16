@@ -90,4 +90,3 @@ the_eo_table_clean <- the_eo_table %>%
 
 ##Save the table
 write_csv(the_eo_table_clean, "C:/Users/kellickson/OneDrive - Union of Concerned Scientists/data_analysis/opm_schedule_pol_sci/new_empl_policy.csv")
-
